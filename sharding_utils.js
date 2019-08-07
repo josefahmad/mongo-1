@@ -650,7 +650,11 @@ sh.move_data = function(ns, srcShard, dstShard, bytesRequested) {
 }
 
 sh.split_to_max = function(ns) {
-    const maxSize = sh._chunkSize();
+    var maxSize = sh._chunkSize();
+    if (maxSize > 1) {
+       maxSize = maxSize / 2;
+    }
+
     print("--------------------------------------------------------------------------------");
     print("Split", ns, "chunks until they are below", sh._dataFormat(maxSize));
     print("--------------------------------------------------------------------------------");
