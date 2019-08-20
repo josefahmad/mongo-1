@@ -649,7 +649,7 @@ sh.move_data = function(ns, srcShard, dstShard, bytesRequested) {
     print();
 }
 
-sh.split_to_max = function(ns) {
+sh.split_to_max = function(ns, startChunk_id) {
     const maxSize = sh._chunkSize();
     print("--------------------------------------------------------------------------------");
     print("Split", ns, "chunks until they are below", sh._dataFormat(maxSize));
@@ -669,9 +669,14 @@ sh.split_to_max = function(ns) {
     let zeroChunks = 0;
     let fitChunks = 0;
     let splitChunks = 0;
-    let query = {"ns": ns};
+    let query = ""
+    if (startChunk_id != null){
+        query = {"ns": ns, "_id":{$gte:startChunk_id}};
+    }
+    else {
+        query = {"ns": ns};
+    }
     let itr = sh._configDB.chunks.find(query).sort({_id:1});
-
      while (itr.hasNext()) {
         //print("Starting with", tojsononeline(query));
 
